@@ -5,4 +5,9 @@ package jp.techacademy.yusuke2.suzuki.icecreamsearch;
  */
 
 public class LatLngName {
-}
+    Double lat;
+    Double lng;
+    String name;
+    }
+
+
