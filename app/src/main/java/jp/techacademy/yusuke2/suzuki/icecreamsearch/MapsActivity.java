@@ -2,6 +2,7 @@ package jp.techacademy.yusuke2.suzuki.icecreamsearch;
 
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -93,60 +94,65 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 urlStrBuilder.append("?location=" + lat + "," + lng);
                 urlStrBuilder.append("&sensor=true&rankby=distance&types=convenience_store&key=AIzaSyDIFum2371izcbg4jLjq2D3SV3zlzaqUkI");
                 //AIzaSyDmcjb2rvqsWxWGzpxvKvFKfZnEkrhgxgI
-                URL u = new URL(urlStrBuilder.toString());
+//              URL u = new URL(urlStrBuilder.toString());
+
+                Uri.Builder builder = new Uri.Builder().authority(urlStrBuilder.toString());
+                AsyncHttpRequest task = new AsyncHttpRequest(this);
+                task.execute(builder);
 
                 // APIを叩いてJSONをダウンロード
-                HttpURLConnection con = (HttpURLConnection) u.openConnection();
-                con.setRequestMethod("GET");
-//              con.setRequestProperty("Accept-Language", "jp");
-                con.connect();
-                BufferedInputStream is = new BufferedInputStream(con.getInputStream());
+//                HttpURLConnection con = (HttpURLConnection) u.openConnection();
+//                con.setRequestMethod("GET");
+//                con.setRequestProperty("Accept-Language", "jp");
+//                con.connect();
 
-                String path = Environment.getExternalStorageDirectory() + "/tekitou/";
-                String fileName = "tekitou.json";
-                File dir = new File(path);
-                dir.mkdirs();
-                File outputFile = new File(dir, fileName);
-                FileOutputStream fos = new FileOutputStream(outputFile);
-
-                int bytesRead = -1;
-                byte[] buffer = new byte[1024];
-                while ((bytesRead = is.read(buffer)) != -1) {
-                    fos.write(buffer, 0, bytesRead);
-                }
-                fos.flush();
-                fos.close();
-                is.close();
-
-                // ファイル読み込み
-                FileInputStream fileInputStream;
-                String path2 = Environment.getExternalStorageDirectory() + "/tekitou/";
-                String fileName2 = "tekitou.json";
-                File dir2 = new File(path);
-                File inputFile = new File(dir, fileName);
-                fileInputStream = new FileInputStream(inputFile);
-                byte[] readBytes = new byte[fileInputStream.available()];
-                fileInputStream.read(readBytes);
-                String json = new String(readBytes);
-
-                // JSONのパース with Jackson
-                ObjectMapper mapper = new ObjectMapper();
-                Object root = mapper.readValue(json, Object.class);
-                Map<?,?> rootMap = mapper.readValue(json, Map.class);
-                ArrayList nextArray = (ArrayList)rootMap.get("results");
-                ArrayList mArrayList = new ArrayList<LatLngName>();
-
-                for(int i =0; i < nextArray.size(); i++) {
-                    Map<?, ?> thirdMap = (Map<?, ?>) nextArray.get(i);
-                    Map<?, ?> forthMap = (Map<?, ?>) ((Map<?, ?>) thirdMap.get("geometry")).get("location");
-                    Double lat2 = (Double) forthMap.get("lat");
-                    Double lng2 = (Double) forthMap.get("lng");
-                    String name = (String)thirdMap.get("name");
-                    Log.d("TAG", "lat=" + lat2 + " lng=" + lng2 + " name=" + name);
-                }
-
+//                BufferedInputStream is = new BufferedInputStream(con.getInputStream());
+//
+//                String path = Environment.getExternalStorageDirectory() + "/tekitou/";
+//                String fileName = "tekitou.json";
+//                File dir = new File(path);
+//                dir.mkdirs();
+//                File outputFile = new File(dir, fileName);
+//                FileOutputStream fos = new FileOutputStream(outputFile);
+//
+//                int bytesRead = -1;
+//                byte[] buffer = new byte[1024];
+//                while ((bytesRead = is.read(buffer)) != -1) {
+//                    fos.write(buffer, 0, bytesRead);
+//                }
+//                fos.flush();
+//                fos.close();
+//                is.close();
+//
+//                // ファイル読み込み
+//                FileInputStream fileInputStream;
+//                String path2 = Environment.getExternalStorageDirectory() + "/tekitou/";
+//                String fileName2 = "tekitou.json";
+//                File dir2 = new File(path);
+//                File inputFile = new File(dir, fileName);
+//                fileInputStream = new FileInputStream(inputFile);
+//                byte[] readBytes = new byte[fileInputStream.available()];
+//                fileInputStream.read(readBytes);
+//                String json = new String(readBytes);
+//
+//                // JSONのパース with Jackson
+//                ObjectMapper mapper = new ObjectMapper();
+//                Object root = mapper.readValue(json, Object.class);
+//                Map<?,?> rootMap = mapper.readValue(json, Map.class);
+//                ArrayList nextArray = (ArrayList)rootMap.get("results");
+//                ArrayList mArrayList = new ArrayList<LatLngName>();
+//
+//                for(int i =0; i < nextArray.size(); i++) {
+//                    Map<?, ?> thirdMap = (Map<?, ?>) nextArray.get(i);
+//                    Map<?, ?> forthMap = (Map<?, ?>) ((Map<?, ?>) thirdMap.get("geometry")).get("location");
+//                    Double lat2 = (Double) forthMap.get("lat");
+//                    Double lng2 = (Double) forthMap.get("lng");
+//                    String name = (String)thirdMap.get("name");
+//                    Log.d("TAG", "lat=" + lat2 + " lng=" + lng2 + " name=" + name);
+//                }
+//
             } catch (IOException e) {
-                e.printStackTrace();
+               e.printStackTrace();
             }
 
         }
