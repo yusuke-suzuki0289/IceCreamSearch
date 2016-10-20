@@ -90,13 +90,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 // URL生成（現在地を元に）
                 double lat = address.getLatitude();
                 double lng = address.getLongitude();
-                StringBuilder urlStrBuilder = new StringBuilder("https://maps.googleapis.com/maps/api/place/search/json");
-                urlStrBuilder.append("?location=" + lat + "," + lng);
-                urlStrBuilder.append("&sensor=true&rankby=distance&types=convenience_store&key=AIzaSyDIFum2371izcbg4jLjq2D3SV3zlzaqUkI");
+                String urlstring = "https://maps.googleapis.com/maps/api/place/search/json";
+                urlstring += "?location=" + lat + "," + lng;
+                urlstring += "&sensor=true&rankby=distance&types=convenience_store&key=AIzaSyDIFum2371izcbg4jLjq2D3SV3zlzaqUkI";
                 //AIzaSyDmcjb2rvqsWxWGzpxvKvFKfZnEkrhgxgI
 //              URL u = new URL(urlStrBuilder.toString());
 
-                Uri.Builder builder = new Uri.Builder().authority(urlStrBuilder.toString());
+                Uri.Builder builder = new Uri.Builder().authority(urlstring);
                 AsyncHttpRequest task = new AsyncHttpRequest(this);
                 task.execute(builder);
 

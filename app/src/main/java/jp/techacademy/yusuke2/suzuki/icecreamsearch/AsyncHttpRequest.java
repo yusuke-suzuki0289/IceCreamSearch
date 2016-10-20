@@ -99,7 +99,7 @@ public class AsyncHttpRequest extends AsyncTask<Uri.Builder, Void, String> {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return XXX;
+        return "Success";
     }
 
     // このメソッドは非同期処理の終わった後に呼び出されます
