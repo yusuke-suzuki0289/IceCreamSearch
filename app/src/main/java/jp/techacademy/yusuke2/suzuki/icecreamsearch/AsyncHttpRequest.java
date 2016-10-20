@@ -73,8 +73,8 @@ public class AsyncHttpRequest extends AsyncTask<Uri.Builder, Void, String> {
             FileInputStream fileInputStream;
             String path2 = Environment.getExternalStorageDirectory() + "/tekitou/";
             String fileName2 = "tekitou.json";
-            File dir2 = new File(path);
-            File inputFile = new File(dir, fileName);
+            File dir2 = new File(path2);
+            File inputFile = new File(dir2, fileName2);
             fileInputStream = new FileInputStream(inputFile);
             byte[] readBytes = new byte[fileInputStream.available()];
             fileInputStream.read(readBytes);
