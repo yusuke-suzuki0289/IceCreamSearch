@@ -96,9 +96,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //AIzaSyDmcjb2rvqsWxWGzpxvKvFKfZnEkrhgxgI
 //              URL u = new URL(urlStrBuilder.toString());
 
-                Uri.Builder builder = new Uri.Builder().authority(urlstring);
+                Uri uri = Uri.parse(urlstring);
                 AsyncHttpRequest task = new AsyncHttpRequest(this);
-                task.execute(builder);
+                task.execute(uri);
 
                 // APIを叩いてJSONをダウンロード
 //                HttpURLConnection con = (HttpURLConnection) u.openConnection();
