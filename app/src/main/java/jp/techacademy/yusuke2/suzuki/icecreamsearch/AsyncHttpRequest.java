@@ -12,6 +12,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,6 +20,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -31,6 +33,8 @@ import java.util.Map;
 
 public class AsyncHttpRequest extends AsyncTask<Uri, Void, String> {
 
+    private String json = "";
+    private JSONObject jObj = null;
     private Activity MapsActivity;
 
     public AsyncHttpRequest(Activity activity) {
@@ -57,16 +61,29 @@ public class AsyncHttpRequest extends AsyncTask<Uri, Void, String> {
             // 接続
             con.connect();
 
-            BufferedInputStream is = new BufferedInputStream(con.getInputStream());
-            InputStream bufIn = con.getInputStream();
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
+            final InputStream in = con.getInputStream();
+            final InputStreamReader inReader = new InputStreamReader(in);
+            final BufferedReader bufReader = new BufferedReader(inReader);
 
-            // Json読み込み
-            String json = new String(buffer);
-            JSONObject jsonObject = new JSONObject(json);
+            String line;
+            StringBuilder strResult = new StringBuilder();
+            while ((line = bufReader.readLine()) != null) {
+                strResult.append(line);
+            }
+
+            json = strResult.toString();
+            try {
+                jObj = new JSONObject(json);
+            } catch (JSONException e) {
+                Log.e("JSON Parser", "Error parsing data " + e.toString());
+            }
+            return "Success";
+
+//            BufferedInputStream is = new BufferedInputStream(con.getInputStream());
+//            int size = is.available();
+//            byte[] buffer = new byte[size];
+//            is.read(buffer);
+//            is.close();
 
 //            String path = Environment.getDataDirectory() + "/sample/";
 //            String fileName = "sample.json";
@@ -117,8 +134,8 @@ public class AsyncHttpRequest extends AsyncTask<Uri, Void, String> {
         } catch (IOException e) {
             e.printStackTrace();
 
-        } catch (JSONException e) {
-            e.printStackTrace();
+//        } catch (JSONException e) {
+//            e.printStackTrace();
         }
 
         return "Success";
