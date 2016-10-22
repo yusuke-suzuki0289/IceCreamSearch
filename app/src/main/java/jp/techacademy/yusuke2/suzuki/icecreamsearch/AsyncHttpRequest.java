@@ -7,7 +7,12 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -27,12 +32,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static jp.techacademy.yusuke2.suzuki.icecreamsearch.R.id.map;
+
 /**
  * Created by yusus on 2016/10/18.
  */
 
 public class AsyncHttpRequest extends AsyncTask<Uri, Void, String> {
 
+    private GoogleMap mMap2;
     private String json = "";
     private JSONObject jObj = null;
     private Activity MapsActivity;
@@ -74,10 +82,35 @@ public class AsyncHttpRequest extends AsyncTask<Uri, Void, String> {
             json = strResult.toString();
             try {
                 jObj = new JSONObject(json);
+//                try {
+                        JSONArray array = (JSONArray) jObj.getJSONArray("results");
+//                        for (初期化式; 条件式; 変化式) {
+                        JSONObject obj0 = (JSONObject) array.get(0);
+                        JSONObject geometry0 = (JSONObject) obj0.getJSONObject("geometry");
+                        JSONObject location0 = (JSONObject) geometry0.getJSONObject("location");
+                        double lat0 = location0.getDouble("lat");
+                        double lng0 = location0.getDouble("lng");
+                        LatLng latLng0 = new LatLng(lat0, lng0);
+//                        JSONObject icon0 = (JSONObject) obj0.getJSONObject("icon");
+//                        JSONObject id0 = (JSONObject) obj0.getJSONObject("id");
+//                        JSONObject name0 = (JSONObject) obj0.getJSONObject("name");
+
+                // マーカー設定
+                        MarkerOptions options = new MarkerOptions();
+                        options.position(latLng0);
+                        mMap2.addMarker(options);
+//                }
+//                        }
+//                }catch(JSONException e){
+//                    Log.e("JSON Parser", "Error parsing data " + e.toString());
+//                }
+
             } catch (JSONException e) {
                 Log.e("JSON Parser", "Error parsing data " + e.toString());
             }
             return "Success";
+
+
 
 //            BufferedInputStream is = new BufferedInputStream(con.getInputStream());
 //            int size = is.available();
@@ -112,21 +145,21 @@ public class AsyncHttpRequest extends AsyncTask<Uri, Void, String> {
 //            fileInputStream.read(readBytes);
 //            String json = new String(readBytes);
 
-            // JSONのパース with Jackson
-            ObjectMapper mapper = new ObjectMapper();
-            Object root = mapper.readValue(json, Object.class);
-            Map<?, ?> rootMap = mapper.readValue(json, Map.class);
-            ArrayList nextArray = (ArrayList) rootMap.get("results");
-            ArrayList mArrayList = new ArrayList<LatLngName>();
-
-            for (int i = 0; i < nextArray.size(); i++) {
-                Map<?, ?> thirdMap = (Map<?, ?>) nextArray.get(i);
-                Map<?, ?> forthMap = (Map<?, ?>) ((Map<?, ?>) thirdMap.get("geometry")).get("location");
-                Double lat2 = (Double) forthMap.get("lat");
-                Double lng2 = (Double) forthMap.get("lng");
-                String name = (String) thirdMap.get("name");
-                Log.d("TAG", "lat=" + lat2 + " lng=" + lng2 + " name=" + name);
-            }
+//            // JSONのパース with Jackson
+//            ObjectMapper mapper = new ObjectMapper();
+//            Object root = mapper.readValue(json, Object.class);
+//            Map<?, ?> rootMap = mapper.readValue(json, Map.class);
+//            ArrayList nextArray = (ArrayList) rootMap.get("results");
+//            ArrayList mArrayList = new ArrayList<LatLngName>();
+//
+//            for (int i = 0; i < nextArray.size(); i++) {
+//                Map<?, ?> thirdMap = (Map<?, ?>) nextArray.get(i);
+//                Map<?, ?> forthMap = (Map<?, ?>) ((Map<?, ?>) thirdMap.get("geometry")).get("location");
+//                Double lat2 = (Double) forthMap.get("lat");
+//                Double lng2 = (Double) forthMap.get("lng");
+//                String name = (String) thirdMap.get("name");
+//                Log.d("TAG", "lat=" + lat2 + " lng=" + lng2 + " name=" + name);
+//            }
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
