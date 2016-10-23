@@ -104,6 +104,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 AsyncHttpRequest task = new AsyncHttpRequest(this);
                 task.execute(uri);
 
+                String str = "a";
 
                 Intent intent1 = getIntent();
                 if(intent1 != null) {
