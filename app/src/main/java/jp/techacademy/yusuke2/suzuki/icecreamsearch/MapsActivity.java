@@ -1,9 +1,12 @@
 package jp.techacademy.yusuke2.suzuki.icecreamsearch;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -40,6 +43,7 @@ import static com.google.android.gms.internal.zznu.is;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private LatLng latLng2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +103,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Uri uri = Uri.parse(urlstring);
                 AsyncHttpRequest task = new AsyncHttpRequest(this);
                 task.execute(uri);
+
+
+                Intent intent1 = getIntent();
+                if(intent1 != null) {
+                    latLng2 = intent1.getExtras().getParcelable("jp.techacademy.yusuke2.suzuki.icecreamsearch.latLng0");
+                }
+
+                new Thread(){
+                    @Override
+                    public void run(){
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                MapsActivity mapsActivity = new MapsActivity();
+                                GoogleMap mMap2 = mapsActivity.getGoogleMap();
+                                MarkerOptions options = new MarkerOptions();
+                                options.position(latLng2);
+                                mMap2.addMarker(options);
+                            }
+                        });
+                    }
+                }.start();
+
+
 
             } catch (IOException e) {
                e.printStackTrace();

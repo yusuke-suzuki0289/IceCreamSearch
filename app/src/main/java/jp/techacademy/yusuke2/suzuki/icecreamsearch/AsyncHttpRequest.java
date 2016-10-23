@@ -1,39 +1,25 @@
 package jp.techacademy.yusuke2.suzuki.icecreamsearch;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Environment;
-import android.os.HandlerThread;
+import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Handler;
 
 import static jp.techacademy.yusuke2.suzuki.icecreamsearch.R.id.map;
 
@@ -85,7 +71,6 @@ public class AsyncHttpRequest extends AsyncTask<Uri, Void, String> {
             json = strResult.toString();
             try {
                 jObj = new JSONObject(json);
-//                try {
                         JSONArray array = (JSONArray) jObj.getJSONArray("results");
 //                        for (初期化式; 条件式; 変化式) {
                         JSONObject obj0 = (JSONObject) array.get(0);
@@ -98,22 +83,10 @@ public class AsyncHttpRequest extends AsyncTask<Uri, Void, String> {
 //                        JSONObject id0 = (JSONObject) obj0.getJSONObject("id");
 //                        JSONObject name0 = (JSONObject) obj0.getJSONObject("name");
 
+                        Intent intent0 = new Intent();
+                        intent0.setClassName("jp.techacademy.yusuke2.suzuki.icecreamsearch", "jp.techacademy.yusuke2.suzuki.icecreamsearch.MapsActivity");
+                        intent0.putExtra("latLng0",latLng0);
 
-                new Thread(){
-                    @Override
-                    public void run(){
-                        new Handler(Looper.getMainLooper()).post(new Runnable() {
-                            @Override
-                            public void run() {
-                                MapsActivity mapsActivity = new MapsActivity();
-                                GoogleMap mMap2 = mapsActivity.getGoogleMap();
-                                MarkerOptions options = new MarkerOptions();
-                                options.position(latLng0);
-                                mMap2.addMarker(options);
-                            }
-                        });
-                    }
-                }.start();
 
             } catch (JSONException e) {
                 Log.e("JSON Parser", "Error parsing data " + e.toString());
