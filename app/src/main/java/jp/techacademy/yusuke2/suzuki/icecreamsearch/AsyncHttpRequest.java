@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.os.HandlerThread;
+import android.os.Looper;
 import android.util.Log;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,6 +33,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Handler;
 
 import static jp.techacademy.yusuke2.suzuki.icecreamsearch.R.id.map;
 
@@ -40,7 +43,6 @@ import static jp.techacademy.yusuke2.suzuki.icecreamsearch.R.id.map;
 
 public class AsyncHttpRequest extends AsyncTask<Uri, Void, String> {
 
-    private GoogleMap mMap2;
     private String json = "";
     private JSONObject jObj = null;
     private Activity MapsActivity;
@@ -58,6 +60,7 @@ public class AsyncHttpRequest extends AsyncTask<Uri, Void, String> {
 
         Uri urib = params[0];
         String str1 = urib.toString();
+
 
         try {
             // URLの作成
@@ -95,22 +98,27 @@ public class AsyncHttpRequest extends AsyncTask<Uri, Void, String> {
 //                        JSONObject id0 = (JSONObject) obj0.getJSONObject("id");
 //                        JSONObject name0 = (JSONObject) obj0.getJSONObject("name");
 
-                // マーカー設定
-                        MarkerOptions options = new MarkerOptions();
-                        options.position(latLng0);
-                        mMap2.addMarker(options);
-//                }
-//                        }
-//                }catch(JSONException e){
-//                    Log.e("JSON Parser", "Error parsing data " + e.toString());
-//                }
+
+                new Thread(){
+                    @Override
+                    public void run(){
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                MapsActivity mapsActivity = new MapsActivity();
+                                GoogleMap mMap2 = mapsActivity.getGoogleMap();
+                                MarkerOptions options = new MarkerOptions();
+                                options.position(latLng0);
+                                mMap2.addMarker(options);
+                            }
+                        });
+                    }
+                }.start();
 
             } catch (JSONException e) {
                 Log.e("JSON Parser", "Error parsing data " + e.toString());
             }
             return "Success";
-
-
 
 //            BufferedInputStream is = new BufferedInputStream(con.getInputStream());
 //            int size = is.available();
