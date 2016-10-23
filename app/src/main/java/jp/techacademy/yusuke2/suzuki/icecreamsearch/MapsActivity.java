@@ -109,25 +109,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Intent intent1 = getIntent();
                 if(intent1 != null) {
                     latLng2 = intent1.getExtras().getParcelable("jp.techacademy.yusuke2.suzuki.icecreamsearch.latLng0");
-                }
-
-                new Thread(){
-                    @Override
-                    public void run(){
-                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    if(latLng2 != null) {
+                        new Thread(){
                             @Override
-                            public void run() {
-                                MapsActivity mapsActivity = new MapsActivity();
-                                GoogleMap mMap2 = mapsActivity.getGoogleMap();
-                                MarkerOptions options = new MarkerOptions();
-                                options.position(latLng2);
-                                mMap2.addMarker(options);
+                            public void run(){
+                                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        MapsActivity mapsActivity = new MapsActivity();
+                                        GoogleMap mMap2 = mapsActivity.getGoogleMap();
+                                        MarkerOptions options = new MarkerOptions();
+                                        options.position(latLng2);
+                                        mMap2.addMarker(options);
+                                    }
+                                });
                             }
-                        });
+                        }.start();
+                    }else{
+                        finish();
                     }
-                }.start();
-
-
+                }
 
             } catch (IOException e) {
                e.printStackTrace();
